@@ -289,7 +289,7 @@
           <p class="text-gray-600 max-w-2xl mx-auto">不锈钢行业知识库，解答您的疑惑</p>
         </div>
         <div id="knowledge-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-  </div>
+          </div>
         <div class="text-center mt-12">
           <button class="btn-primary flex items-center justify-center mx-auto">
             <i class="fas fa-search mr-2" aria-hidden="true"></i> 查看更多知识
@@ -348,10 +348,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-  <script src="data/stainless_steel_data.js"></script>
-  <script src="js/knowledge-system.js"></script>
-  <script src="js/checkin-system.js"></script>
-  <script src="js/document-manager.js"></script>
 
   <script>
     // 定义颜色常量，避免 tailwind.colors 错误
@@ -364,7 +360,7 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-    // ===================================================
+      // ===================================================
       // == 新增代码：从 knowledge.json 加载知识问答数据 ==
       // ===================================================
       fetch('./data/knowledge.json') // 异步请求我们创建的JSON文件
@@ -400,6 +396,7 @@
             knowledgeListContainer.innerHTML = '<p class="text-red-500">知识内容加载失败，请稍后重试。</p>';
           }
         });
+        
       // --- 移动端菜单逻辑 ---
       const menuButton = document.getElementById('mobile-menu-button');
       const mobileMenu = document.getElementById('mobile-menu');
@@ -515,7 +512,7 @@
           label: '不锈钢期货 (¥)',
           title: '不锈钢期货走势分析',
           basePrice: 12500,
-variance: 300,
+          variance: 300,
           color: '#FF7D00'
         },
         'ferro-molybdenum': {
