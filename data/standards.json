@@ -11,7 +11,6 @@
     "status": "现行",
     "status_color": "blue",
     "description": "不锈钢棒",
-    "link": "/pdfs/GB-T-4237-2015不锈钢热轧钢板和钢带.pdf"     // <--- 修改这里
+    "link": "/pdfs/GB-T-4237-2015不锈钢热轧钢板和钢带.pdf"
   }
-  // ...以此类推
 ]
