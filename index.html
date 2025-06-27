@@ -288,23 +288,8 @@
           <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800">知识问答 <i class="fas fa-question-circle text-orange-500 ml-2" aria-hidden="true"></i></h2>
           <p class="text-gray-600 max-w-2xl mx-auto">不锈钢行业知识库，解答您的疑惑</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
-            <h3 class="text-xl font-bold mb-3 text-gray-800">不锈钢的分类有哪些？</h3>
-            <p class="text-gray-700 mb-4">主要分为奥氏体、铁素体、马氏体、双相和沉淀硬化不锈钢五大类...</p>
-            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
-          </div>
-          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
-            <h3 class="text-xl font-bold mb-3 text-gray-800">304与316不锈钢的区别？</h3>
-            <p class="text-gray-700 mb-4">316因添加钼元素，耐腐蚀性更强，尤其耐氯化物腐蚀，成本也更高...</p>
-            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
-          </div>
-          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
-            <h3 class="text-xl font-bold mb-3 text-gray-800">不锈钢表面处理方法？</h3>
-            <p class="text-gray-700 mb-4">常见有机械抛光、化学抛光、喷砂、拉丝、镀钛、喷涂等...</p>
-            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
-          </div>
-        </div>
+        <div id="knowledge-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+  </div>
         <div class="text-center mt-12">
           <button class="btn-primary flex items-center justify-center mx-auto">
             <i class="fas fa-search mr-2" aria-hidden="true"></i> 查看更多知识
@@ -379,6 +364,42 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
+    // ===================================================
+      // == 新增代码：从 knowledge.json 加载知识问答数据 ==
+      // ===================================================
+      fetch('./data/knowledge.json') // 异步请求我们创建的JSON文件
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('网络响应错误');
+          }
+          return response.json(); // 将响应体解析为JSON
+        })
+        .then(articles => {
+          const knowledgeListContainer = document.getElementById('knowledge-list');
+          if (knowledgeListContainer) {
+            let contentHTML = '';
+            articles.forEach(article => {
+              // 为每一篇文章数据生成一个HTML卡片
+              contentHTML += `
+                <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
+                  <h3 class="text-xl font-bold mb-3 text-gray-800">${article.title}</h3>
+                  <p class="text-gray-700 mb-4">${article.summary}</p>
+                  <a href="${article.link}" class="text-blue-600 font-medium hover:underline flex items-center">
+                    查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i>
+                  </a>
+                </div>
+              `;
+            });
+            knowledgeListContainer.innerHTML = contentHTML; // 将生成的HTML内容插入到容器中
+          }
+        })
+        .catch(error => {
+          console.error('加载知识问答数据失败:', error);
+          const knowledgeListContainer = document.getElementById('knowledge-list');
+          if (knowledgeListContainer) {
+            knowledgeListContainer.innerHTML = '<p class="text-red-500">知识内容加载失败，请稍后重试。</p>';
+          }
+        });
       // --- 移动端菜单逻辑 ---
       const menuButton = document.getElementById('mobile-menu-button');
       const mobileMenu = document.getElementById('mobile-menu');
