@@ -1,0 +1,17 @@
+[
+  {
+    "id": "GB/T 20878-2024",
+    "status": "现行",
+    "status_color": "blue",
+    "description": "不锈钢和耐热钢 牌号及化学成分",
+    "link": "/pdfs/GB-T-20878-2024不锈钢 牌号及化学成分.pdf"
+  },
+  {
+    "id": "GB/T 4237-2015",
+    "status": "现行",
+    "status_color": "blue",
+    "description": "不锈钢棒",
+    "link": "/pdfs/GB-T-4237-2015不锈钢热轧钢板和钢带.pdf"     // <--- 修改这里
+  }
+  // ...以此类推
+]
