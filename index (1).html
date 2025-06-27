@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="问不锈">
+  <meta name="theme-color" content="#165DFF">
+  <title>问不锈 - 不锈钢专业查询平台</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply font-sans bg-gray-50 text-gray-800 touch-manipulation; 
+      }
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+    @layer components {
+      .nav-link {
+        @apply relative after:content-[''] after:absolute after:w-0 after:h-[2px] after:bottom-[-2px] after:left-0 after:bg-blue-600 after:transition-all after:duration-300;
+      }
+      .nav-link:hover::after {
+        @apply w-full;
+      }
+      .card-hover {
+        @apply transition-all duration-300;
+      }
+      .card-hover:hover {
+        @apply -translate-y-1 shadow-xl;
+      }
+      .btn-primary {
+        @apply bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-all shadow-lg active:scale-95;
+      }
+      .btn-secondary {
+        @apply bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-full transition-all shadow-lg active:scale-95;
+      }
+      .btn-accent {
+        @apply bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full transition-all shadow-lg active:scale-95;
+      }
+      .price-card {
+        @apply transition-all duration-300 border-2 border-transparent;
+      }
+      .price-card.active {
+        @apply border-blue-500 bg-blue-50 shadow-xl;
+      }
+      .period-btn {
+        @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+      }
+      .period-btn.active {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
+      }
+    }
+    @layer utilities {
+      #progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background-color: #165DFF;
+        width: 0%;
+        z-index: 1000;
+        transition: width 0.3s ease;
+      }
+      .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+      }
+      .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+            accent: '#FF7D00',
+            dark: '#1D2129',
+            light: '#F2F3F5',
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="overflow-x-hidden">
+  <div id="progress-bar"></div>
+
+  <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-md py-3 safe-area-top" id="navbar">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <a href="#" class="flex items-center space-x-2" aria-label="问不锈主页">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-teal-500 flex items-center justify-center">
+          <i class="fas fa-industry text-white" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">问不锈</h1>
+          <p class="text-xs text-gray-500">唐淼 BETA 1.0 2025年</p>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="#check-in" class="text-gray-600 hover:text-blue-600 transition-colors font-medium nav-link">每日打卡</a>
+        <a href="#market" class="text-gray-600 hover:text-blue-600 transition-colors font-medium nav-link">实时行情</a>
+        <a href="#knowledge" class="text-gray-600 hover:text-blue-600 transition-colors font-medium nav-link">知识问答</a>
+        <a href="#standards" class="text-gray-600 hover:text-blue-600 transition-colors font-medium nav-link">标准规范</a>
+        <a href="#consult" class="text-gray-600 hover:text-blue-600 transition-colors font-medium nav-link">在线咨询</a>
+        <button class="btn-primary flex items-center gap-2">
+          <i class="fas fa-user-circle" aria-hidden="true"></i> 登录/注册
+        </button>
+      </nav>
+
+      <button class="md:hidden text-2xl text-gray-800 p-2" id="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false" aria-label="主菜单">
+        <i class="fas fa-bars" id="menu-open-icon" aria-hidden="true"></i>
+        <i class="fas fa-times hidden" id="menu-close-icon" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="md:hidden bg-white shadow-lg absolute w-full left-0 top-full opacity-0 -translate-y-4 pointer-events-none transition-all duration-300" id="mobile-menu">
+      <div class="container mx-auto px-4 py-4 flex flex-col">
+        <a href="#check-in" class="mobile-nav-link text-gray-700 hover:text-blue-600 transition-colors py-4 border-b border-gray-100 flex items-center gap-3"><i class="fas fa-calendar-check w-5 text-center text-blue-500" aria-hidden="true"></i> 每日打卡</a>
+        <a href="#market" class="mobile-nav-link text-gray-700 hover:text-blue-600 transition-colors py-4 border-b border-gray-100 flex items-center gap-3"><i class="fas fa-chart-line w-5 text-center text-blue-500" aria-hidden="true"></i> 实时行情</a>
+        <a href="#knowledge" class="mobile-nav-link text-gray-700 hover:text-blue-600 transition-colors py-4 border-b border-gray-100 flex items-center gap-3"><i class="fas fa-question-circle w-5 text-center text-blue-500" aria-hidden="true"></i> 知识问答</a>
+        <a href="#standards" class="mobile-nav-link text-gray-700 hover:text-blue-600 transition-colors py-4 border-b border-gray-100 flex items-center gap-3"><i class="fas fa-book w-5 text-center text-blue-500" aria-hidden="true"></i> 标准规范</a>
+        <a href="#consult" class="mobile-nav-link text-gray-700 hover:text-blue-600 transition-colors py-4 flex items-center gap-3"><i class="fas fa-comments w-5 text-center text-blue-500" aria-hidden="true"></i> 在线咨询</a>
+        <button class="btn-primary w-full mt-4 flex items-center justify-center gap-2">
+          <i class="fas fa-user-circle" aria-hidden="true"></i> 登录/注册
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-24 md:pt-28">
+    <section id="check-in" class="py-12 md:py-16 bg-gradient-to-br from-blue-100 to-teal-100 relative overflow-hidden">
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden card-hover">
+            <div class="p-6 md:p-8">
+              <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3 text-gray-800">每日打卡 <i class="fas fa-calendar-check text-orange-500 ml-2" aria-hidden="true"></i></h2>
+                <p class="text-gray-600 text-sm">坚持打卡，积累专业知识</p>
+              </div>
+              <button class="btn-accent w-full flex items-center justify-center gap-2">
+                <i class="fas fa-check-circle" aria-hidden="true"></i> 点击打卡
+              </button>
+
+              <div class="mt-6">
+                <h3 class="text-lg font-semibold mb-3 text-center text-gray-800">打卡排行榜</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <ul class="space-y-2">
+                    <li class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                      <div class="flex items-center">
+                        <span class="w-6 h-6 bg-yellow-400 text-white rounded-full flex items-center justify-center mr-3 font-bold text-sm">1</span>
+                        <span>张工</span>
+                      </div>
+                      <span class="text-blue-600 font-medium">128 天</span>
+                    </li>
+                    <li class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                      <div class="flex items-center">
+                        <span class="w-6 h-6 bg-gray-300 text-gray-800 rounded-full flex items-center justify-center mr-3 font-bold text-sm">2</span>
+                        <span>李工</span>
+                      </div>
+                      <span class="text-blue-600 font-medium">112 天</span>
+                    </li>
+                    <li class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                      <div class="flex items-center">
+                        <span class="w-6 h-6 bg-amber-700 text-white rounded-full flex items-center justify-center mr-3 font-bold text-sm">3</span>
+                        <span>王工</span>
+                      </div>
+                      <span class="text-blue-600 font-medium">98 天</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden card-hover">
+            <div class="p-6 md:p-8">
+              <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3 text-gray-800">每日科普 <i class="fas fa-lightbulb text-yellow-500 ml-2" aria-hidden="true"></i></h2>
+                <p class="text-gray-600 text-sm">每天了解一点不锈钢知识</p>
+              </div>
+
+              <div class="space-y-4">
+                <div class="bg-blue-50 rounded-xl p-4">
+                  <div class="flex items-start">
+                    <div class="bg-blue-600 text-white p-3 rounded-lg mr-4 mt-1 flex-shrink-0">
+                      <i class="fas fa-flask text-lg" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-lg mb-1 text-gray-800">不锈钢的耐腐蚀原理</h3>
+                      <p class="text-gray-700 text-sm leading-relaxed">其表面形成的富铬氧化物钝化膜，是耐腐蚀的关键。当Cr含量超过10.5%时，钢材便具有不锈性。</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-orange-50 rounded-xl p-4">
+                  <div class="flex items-start">
+                    <div class="bg-orange-500 text-white p-3 rounded-lg mr-4 mt-1 flex-shrink-0">
+                      <i class="fas fa-industry text-lg" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-lg mb-1 text-gray-800">304与316的区别</h3>
+                      <p class="text-gray-700 text-sm leading-relaxed">316增加了钼(Mo)元素，显著提高了对氯化物腐蚀的抵抗能力，更适用于海洋或化工环境。</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 text-center">
+                <button class="btn-primary flex items-center justify-center mx-auto">
+                  <i class="fas fa-book-open mr-2" aria-hidden="true"></i> 查看更多科普
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="market" class="py-12 md:py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800">实时行情 <i class="fas fa-chart-line text-orange-500 ml-2" aria-hidden="true"></i></h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">获取不锈钢及相关金属的最新价格走势和市场动态</p>
+          <p class="text-gray-400 text-sm mt-2">最后更新时间: <span id="current-time"></span></p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div class="bg-white rounded-2xl p-4 md:p-6 shadow-lg border-t-4 border-blue-600 card-hover cursor-pointer transition-all duration-300 price-card active" data-symbol="lme-nickel">
+            <h3 class="text-lg font-semibold mb-1 text-gray-800">LME镍价</h3>
+            <div class="text-2xl md:text-3xl font-bold my-2 text-gray-800">$15,050</div>
+            <div class="flex items-center text-green-500 text-sm"><i class="fas fa-arrow-up mr-1" aria-hidden="true"></i> +0.7%</div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 md:p-6 shadow-lg border-t-4 border-blue-600 card-hover cursor-pointer transition-all duration-300 price-card" data-symbol="shanghai-nickel">
+            <h3 class="text-lg font-semibold mb-1 text-gray-800">沪镍主力</h3>
+            <div class="text-2xl md:text-3xl font-bold my-2 text-gray-800">¥118,280</div>
+            <div class="flex items-center text-red-500 text-sm"><i class="fas fa-arrow-down mr-1" aria-hidden="true"></i> -0.2%</div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 md:p-6 shadow-lg border-t-4 border-blue-600 card-hover cursor-pointer transition-all duration-300 price-card" data-symbol="stainless-steel">
+            <h3 class="text-lg font-semibold mb-1 text-gray-800">不锈钢期货</h3>
+            <div class="text-2xl md:text-3xl font-bold my-2 text-gray-800">¥12,505</div>
+            <div class="flex items-center text-red-500 text-sm"><i class="fas fa-arrow-down mr-1" aria-hidden="true"></i> -0.4%</div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 md:p-6 shadow-lg border-t-4 border-orange-500 card-hover cursor-pointer transition-all duration-300 price-card" data-symbol="ferro-molybdenum">
+            <h3 class="text-lg font-semibold mb-1 text-gray-800">钼铁Mo60</h3>
+            <div class="text-2xl md:text-3xl font-bold my-2 text-gray-800">¥258,000</div>
+            <div class="flex items-center text-green-500 text-sm"><i class="fas fa-arrow-up mr-1" aria-hidden="true"></i> +1.2%</div>
+          </div>
+        </div>
+
+        <div class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-4 md:p-8">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 md:mb-0" id="chart-title">LME镍价 - 价格走势分析</h3>
+            <div class="flex flex-wrap gap-2">
+              <button class="period-btn active px-4 py-2 text-sm font-medium rounded-lg transition-all" data-period="7">一周</button>
+              <button class="period-btn px-4 py-2 text-sm font-medium rounded-lg transition-all" data-period="30">一个月</button>
+              <button class="period-btn px-4 py-2 text-sm font-medium rounded-lg transition-all" data-period="90">一个季度</button>
+              <button class="period-btn px-4 py-2 text-sm font-medium rounded-lg transition-all" data-period="365">一年</button>
+            </div>
+          </div>
+          <div class="h-[300px] md:h-[350px] w-full">
+            <canvas id="priceChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="knowledge" class="py-12 md:py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800">知识问答 <i class="fas fa-question-circle text-orange-500 ml-2" aria-hidden="true"></i></h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">不锈钢行业知识库，解答您的疑惑</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
+            <h3 class="text-xl font-bold mb-3 text-gray-800">不锈钢的分类有哪些？</h3>
+            <p class="text-gray-700 mb-4">主要分为奥氏体、铁素体、马氏体、双相和沉淀硬化不锈钢五大类...</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
+          </div>
+          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
+            <h3 class="text-xl font-bold mb-3 text-gray-800">304与316不锈钢的区别？</h3>
+            <p class="text-gray-700 mb-4">316因添加钼元素，耐腐蚀性更强，尤其耐氯化物腐蚀，成本也更高...</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
+          </div>
+          <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
+            <h3 class="text-xl font-bold mb-3 text-gray-800">不锈钢表面处理方法？</h3>
+            <p class="text-gray-700 mb-4">常见有机械抛光、化学抛光、喷砂、拉丝、镀钛、喷涂等...</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看详情 <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
+          </div>
+        </div>
+        <div class="text-center mt-12">
+          <button class="btn-primary flex items-center justify-center mx-auto">
+            <i class="fas fa-search mr-2" aria-hidden="true"></i> 查看更多知识
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="standards" class="py-12 md:py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800">标准规范 <i class="fas fa-book text-orange-500 ml-2" aria-hidden="true"></i></h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">不锈钢行业标准规范，提供权威技术参考</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-gray-800">GB/T 20878-2023</h3>
+              <span class="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">现行</span>
+            </div>
+            <p class="text-gray-700 mb-4">不锈钢和耐热钢 牌号及化学成分</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看 <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-gray-800">GB/T 1220-2022</h3>
+              <span class="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">现行</span>
+            </div>
+            <p class="text-gray-700 mb-4">不锈钢棒</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看 <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-gray-800">GB/T 14976-2012</h3>
+              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">即将修订</span>
+            </div>
+            <p class="text-gray-700 mb-4">流体输送用不锈钢无缝钢管</p>
+            <a href="#" class="text-blue-600 font-medium hover:underline flex items-center">查看 <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="consult" class="bg-gray-800 text-white pt-12 md:pt-16 pb-8 safe-area-bottom">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">需要专业咨询？</h2>
+      <p class="text-gray-400 mb-8 max-w-xl mx-auto">我们的专家团队随时准备为您服务，解答您在不锈钢材料、工艺、标准等方面的任何问题。</p>
+      <button class="btn-secondary inline-flex items-center">
+        <i class="fas fa-comments mr-2" aria-hidden="true"></i> 立即在线咨询
+      </button>
+      <div class="mt-12 border-t border-gray-700 pt-8">
+        <p class="text-gray-500">&copy; 2025 问不锈. All Rights Reserved. By 唐淼.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="data/stainless_steel_data.js"></script>
+  <script src="js/knowledge-system.js"></script>
+  <script src="js/checkin-system.js"></script>
+  <script src="js/document-manager.js"></script>
+
+  <script>
+    // 定义颜色常量，避免 tailwind.colors 错误
+    const COLORS = {
+      primary: '#165DFF',
+      secondary: '#36CFC9',
+      accent: '#FF7D00',
+      blue: '#2563eb',
+      teal: '#14b8a6'
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- 移动端菜单逻辑 ---
+      const menuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const openIcon = document.getElementById('menu-open-icon');
+      const closeIcon = document.getElementById('menu-close-icon');
+      const navLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+      const body = document.body;
+
+      function toggleMenu(show) {
+        const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+        const showMenu = typeof show === 'boolean' ? show : !isExpanded;
+
+        menuButton.setAttribute('aria-expanded', showMenu);
+
+        mobileMenu.classList.toggle('opacity-0', !showMenu);
+        mobileMenu.classList.toggle('-translate-y-4', !showMenu);
+        mobileMenu.classList.toggle('pointer-events-none', !showMenu);
+
+        openIcon.classList.toggle('hidden', showMenu);
+        closeIcon.classList.toggle('hidden', !showMenu);
+
+        // 防止背景滚动
+        body.style.overflow = showMenu ? 'hidden' : '';
+      }
+
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      // 点击菜单链接后自动关闭菜单
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => toggleMenu(false));
+      });
+
+      // 点击外部区域关闭菜单
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !menuButton.contains(e.target)) {
+          toggleMenu(false);
+        }
+      });
+
+      // --- 页面加载进度条 ---
+      const progressBar = document.getElementById('progress-bar');
+      const updateProgressBar = () => {
+        const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        if (scrollTotal > 0) {
+          const scrolled = window.scrollY;
+          const progress = (scrolled / scrollTotal) * 100;
+          progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }
+      };
+
+      window.addEventListener('scroll', updateProgressBar, { passive: true });
+      updateProgressBar(); // Initial call
+
+      // --- 平滑滚动导航 ---
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            // 移动端关闭菜单
+            toggleMenu(false);
+          }
+        });
+      });
+
+      // --- 更新时间 ---
+      const timeElement = document.getElementById('current-time');
+      if (timeElement) {
+        const updateTime = () => {
+          timeElement.textContent = new Date().toLocaleString('zh-CN', { 
+            hour12: false,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        };
+        updateTime();
+        setInterval(updateTime, 60000); // 每分钟更新一次
+      }
+
+      // --- Chart.js 价格图表 ---
+      const ctx = document.getElementById('priceChart');
+      let currentChart = null;
+      let currentSymbol = 'lme-nickel';
+      let currentPeriod = 7;
+
+      // 价格数据配置
+      const priceConfig = {
+        'lme-nickel': {
+          label: 'LME镍价 ($)',
+          title: 'LME镍价走势分析',
+          basePrice: 15000,
+          variance: 500,
+          color: '#165DFF'
+        },
+        'shanghai-nickel': {
+          label: '沪镍主力 (¥)',
+          title: '沪镍主力走势分析',
+          basePrice: 118000,
+          variance: 2000,
+          color: '#36CFC9'
+        },
+        'stainless-steel': {
+          label: '不锈钢期货 (¥)',
+          title: '不锈钢期货走势分析',
+          basePrice: 12500,
+variance: 300,
+          color: '#FF7D00'
+        },
+        'ferro-molybdenum': {
+          label: '钼铁Mo60 (¥)',
+          title: '钼铁Mo60走势分析',
+          basePrice: 258000,
+          variance: 8000,
+          color: '#52C41A'
+        }
+      };
+
+      // 生成日期标签
+      const generateLabels = (days) => {
+        return Array.from({ length: days }, (_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (days - 1 - i));
+          if (days <= 30) {
+            return `${d.getMonth() + 1}/${d.getDate()}`;
+          } else {
+            return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+          }
+        });
+      };
+
+      // 生成模拟价格数据
+      const generatePriceData = (basePrice, variance, days) => {
+        let price = basePrice;
+        return Array.from({length: days}, () => {
+          price += (Math.random() - 0.5) * variance;
+          return Math.round(price);
+        });
+      };
+
+      // 更新图表
+      const updateChart = (symbol, period) => {
+        const config = priceConfig[symbol];
+        if (!config) return;
+
+        const labels = generateLabels(period);
+        const data = generatePriceData(config.basePrice, config.variance, period);
+
+        // 更新标题
+        document.getElementById('chart-title').textContent = config.title;
+
+        if (currentChart) {
+          currentChart.destroy();
+        }
+
+        currentChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: config.label,
+              data: data,
+              borderColor: config.color,
+              backgroundColor: config.color + '20',
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: config.color,
+              pointRadius: period > 90 ? 1 : 2,
+              pointHoverRadius: 6,
+              borderWidth: 2,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { 
+                display: false
+              },
+              tooltip: { 
+                mode: 'index', 
+                intersect: false,
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleColor: 'white',
+                bodyColor: 'white',
+                borderColor: config.color,
+                borderWidth: 1
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: false,
+                grid: { color: 'rgba(0,0,0,0.1)' },
+                ticks: { font: { size: 11 } }
+              },
+              x: {
+                grid: { color: 'rgba(0,0,0,0.1)' },
+                ticks: { 
+                  font: { size: 11 },
+                  maxTicksLimit: period > 90 ? 12 : 15
+                }
+              }
+            },
+            interaction: { 
+              mode: 'nearest', 
+              axis: 'x', 
+              intersect: false 
+            }
+          }
+        });
+      };
+
+      if (ctx) {
+        // 初始化图表
+        updateChart(currentSymbol, currentPeriod);
+
+        // 价格卡片点击事件
+        document.querySelectorAll('.price-card').forEach(card => {
+          card.addEventListener('click', function() {
+            // 移除其他卡片的激活状态
+            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('active'));
+            // 添加当前卡片的激活状态
+            this.classList.add('active');
+
+            currentSymbol = this.dataset.symbol;
+            updateChart(currentSymbol, currentPeriod);
+          });
+        });
+
+        // 时间周期按钮点击事件
+        document.querySelectorAll('.period-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            // 移除其他按钮的激活状态
+            document.querySelectorAll('.period-btn').forEach(b => {
+              b.classList.remove('active', 'bg-blue-600', 'text-white');
+              b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            // 添加当前按钮的激活状态
+            this.classList.add('active', 'bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+
+            currentPeriod = parseInt(this.dataset.period);
+            updateChart(currentSymbol, currentPeriod);
+          });
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
