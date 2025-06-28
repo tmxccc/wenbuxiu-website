@@ -322,68 +322,67 @@
       </div>
     </div>
   </footer>
-<div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[99] flex items-center justify-center p-4 hidden">
-  <div id="auth-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 transform transition-all opacity-0 -translate-y-4">
-    <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">
-      <i class="fas fa-times"></i>
-    </button>
 
-    <h2 id="modal-title" class="text-2xl font-bold text-center text-gray-800 mb-2">登录您的账户</h2>
-    <p id="modal-subtitle" class="text-center text-gray-500 mb-6">欢迎回来！</p>
-
-    <form id="auth-form" class="space-y-4">
-      <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg text-sm"></div>
-
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-        <input type="text" id="username" name="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入用户名">
-      </div>
-
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-        <input type="password" id="password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入密码">
-      </div>
-
-      <button id="submit-btn" type="submit" class="w-full btn-primary !py-2.5">
-        立即登录
+  <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[99] flex items-center justify-center p-4 hidden">
+    <div id="auth-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 transform transition-all opacity-0 -translate-y-4">
+      <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">
+        <i class="fas fa-times"></i>
       </button>
-    </form>
 
-    <p class="text-center text-sm text-gray-500 mt-6">
-      <span id="switch-text">还没有账户？</span>
-      <a href="#" id="switch-link" class="font-medium text-blue-600 hover:underline">立即注册</a>
-    </p>
+      <h2 id="modal-title" class="text-2xl font-bold text-center text-gray-800 mb-2">登录您的账户</h2>
+      <p id="modal-subtitle" class="text-center text-gray-500 mb-6">欢迎回来！</p>
+
+      <form id="auth-form" class="space-y-4">
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg text-sm"></div>
+
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+          <input type="text" id="username" name="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入用户名">
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" id="password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="请输入密码">
+        </div>
+
+        <button id="submit-btn" type="submit" class="w-full btn-primary !py-2.5">
+          立即登录
+        </button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-6">
+        <span id="switch-text">还没有账户？</span>
+        <a href="#" id="switch-link" class="font-medium text-blue-600 hover:underline">立即注册</a>
+      </p>
+    </div>
   </div>
-</div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <script>
-    // 定义颜色常量，避免 tailwind.colors 错误
-    const COLORS = {
-      primary: '#165DFF',
-      secondary: '#36CFC9',
-      accent: '#FF7D00',
-      blue: '#2563eb',
-      teal: '#14b8a6'
-    };
-
     document.addEventListener('DOMContentLoaded', function() {
+      // --- 颜色常量 (保留) ---
+      const COLORS = {
+        primary: '#165DFF',
+        secondary: '#36CFC9',
+        accent: '#FF7D00',
+        blue: '#2563eb',
+        teal: '#14b8a6'
+      };
+
       // ===================================================
-      // == 新增代码：从 knowledge.json 加载知识问答数据 ==
-      // ===================================================
-      // ===================================================
-      // ==           新增：登录/注册弹窗控制逻辑          ==
+      // ==           1. 登录/注册弹窗控制逻辑          ==
       // ===================================================
       const authModal = document.getElementById('auth-modal');
       const authModalContent = document.getElementById('auth-modal-content');
       const closeModalBtn = document.getElementById('close-modal-btn');
-      const loginRegisterBtn = document.querySelector('nav .btn-primary'); // 获取导航栏的登录/注册按钮
-      const mobileLoginRegisterBtn = document.querySelector('#mobile-menu .btn-primary'); // 获取移动端菜单的按钮
+      const loginRegisterBtn = document.querySelector('nav .btn-primary');
+      const mobileLoginRegisterBtn = document.querySelector('#mobile-menu .btn-primary');
 
       function openModal() {
         if (authModal) {
           authModal.classList.remove('hidden');
-          setTimeout(() => { // 延迟一点点，让动画效果更平滑
+          setTimeout(() => {
             authModalContent.classList.remove('opacity-0', '-translate-y-4');
           }, 10);
         }
@@ -394,36 +393,140 @@
           authModalContent.classList.add('opacity-0', '-translate-y-4');
           setTimeout(() => {
             authModal.classList.add('hidden');
-          }, 300); // 等待动画结束后再隐藏
+          }, 300);
         }
       }
 
-      // 给PC端和移动端的登录/注册按钮都加上点击事件
       if (loginRegisterBtn) loginRegisterBtn.addEventListener('click', openModal);
       if (mobileLoginRegisterBtn) mobileLoginRegisterBtn.addEventListener('click', openModal);
-      
-      // 关闭按钮和点击弹窗外部区域都可以关闭弹窗
       if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
       if (authModal) {
         authModal.addEventListener('click', (e) => {
-          if (e.target === authModal) { // 只有在点击灰色背景时才关闭
+          if (e.target === authModal) {
             closeModal();
           }
         });
       }
-      fetch('./data/knowledge.json') // 异步请求我们创建的JSON文件
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('网络响应错误');
+
+      // ===================================================
+      // ==        2. 表单提交与API交互逻辑         ==
+      // ===================================================
+      const authForm = document.getElementById('auth-form');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const submitBtn = document.getElementById('submit-btn');
+      const switchLink = document.getElementById('switch-link');
+      const switchText = document.getElementById('switch-text');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSubtitle = document.getElementById('modal-subtitle');
+      const errorMessageDiv = document.getElementById('error-message');
+
+      let isLoginMode = true;
+
+      function toggleMode(e) {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        errorMessageDiv.classList.add('hidden');
+        if (isLoginMode) {
+          modalTitle.textContent = '登录您的账户';
+          modalSubtitle.textContent = '欢迎回来！';
+          submitBtn.textContent = '立即登录';
+          switchText.textContent = '还没有账户？';
+          switchLink.textContent = '立即注册';
+        } else {
+          modalTitle.textContent = '创建新账户';
+          modalSubtitle.textContent = '加入我们，探索更多可能';
+          submitBtn.textContent = '立即注册';
+          switchText.textContent = '已有账户？';
+          switchLink.textContent = '返回登录';
+        }
+      }
+
+      if (switchLink) switchLink.addEventListener('click', toggleMode);
+
+      if (authForm) {
+        authForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          errorMessageDiv.classList.add('hidden');
+
+          const username = usernameInput.value;
+          const password = passwordInput.value;
+          
+          const url = isLoginMode ? 'http://localhost:3000/login' : 'http://localhost:3000/register';
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+          };
+
+          try {
+            const response = await fetch(url, options);
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.message || '操作失败');
+            }
+
+            if (isLoginMode) {
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('username', username);
+              alert('登录成功！');
+              updateUIAfterLogin(username);
+              closeModal();
+            } else {
+              alert('注册成功！将自动切换到登录模式。');
+              toggleMode(e);
+              usernameInput.value = username;
+              passwordInput.value = '';
+            }
+
+          } catch (error) {
+            errorMessageDiv.textContent = error.message;
+            errorMessageDiv.classList.remove('hidden');
           }
-          return response.json(); // 将响应体解析为JSON
-        })
+        });
+      }
+      
+      function updateUIAfterLogin(username) {
+          loginRegisterBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i> 退出登录`;
+          loginRegisterBtn.removeEventListener('click', openModal);
+          loginRegisterBtn.addEventListener('click', handleLogout);
+
+          mobileLoginRegisterBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i> 退出登录`;
+          mobileLoginRegisterBtn.removeEventListener('click', openModal);
+          mobileLoginRegisterBtn.addEventListener('click', handleLogout);
+      }
+
+      function handleLogout() {
+        if (confirm('您确定要退出登录吗？')) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.reload();
+        }
+      }
+
+      function checkLoginStatus() {
+        const storedToken = localStorage.getItem('token');
+        const storedUsername = localStorage.getItem('username');
+        if (storedToken && storedUsername) {
+          updateUIAfterLogin(storedUsername);
+        }
+      }
+      
+      checkLoginStatus(); // 页面加载时立即检查登录状态
+
+      // ===================================================
+      // ==        3. 动态内容加载 (JSON文件)          ==
+      // ===================================================
+      fetch('./data/knowledge.json')
+        .then(response => response.json())
         .then(articles => {
           const knowledgeListContainer = document.getElementById('knowledge-list');
           if (knowledgeListContainer) {
             let contentHTML = '';
             articles.forEach(article => {
-              // 为每一篇文章数据生成一个HTML卡片
               contentHTML += `
                 <div class="bg-gray-50 rounded-2xl p-6 shadow-md card-hover">
                   <h3 class="text-xl font-bold mb-3 text-gray-800">${article.title}</h3>
@@ -434,19 +537,11 @@
                 </div>
               `;
             });
-            knowledgeListContainer.innerHTML = contentHTML; // 将生成的HTML内容插入到容器中
+            knowledgeListContainer.innerHTML = contentHTML;
           }
         })
-        .catch(error => {
-          console.error('加载知识问答数据失败:', error);
-          const knowledgeListContainer = document.getElementById('knowledge-list');
-          if (knowledgeListContainer) {
-            knowledgeListContainer.innerHTML = '<p class="text-red-500">知识内容加载失败，请稍后重试。</p>';
-          }
-        });
-        // ===================================================
-      // == 新增代码：从 standards.json 加载标准规范数据 ==
-      // ===================================================
+        .catch(error => console.error('加载知识问答数据失败:', error));
+
       fetch('./data/standards.json')
         .then(response => response.json())
         .then(standards => {
@@ -466,20 +561,18 @@
                     <span class="${statusClass} text-xs font-medium px-2.5 py-0.5 rounded-full">${standard.status}</span>
                   </div>
                   <p class="text-gray-700 mb-4">${standard.description}</p>
-                  <a href="${standard.link}" class="text-blue-600 font-medium hover:underline flex items-center">查看 <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                  <a href="${standard.link}" target="_blank" class="text-blue-600 font-medium hover:underline flex items-center">查看 <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a>
                 </div>
               `;
             });
             standardsListContainer.innerHTML = contentHTML;
           }
         })
-        .catch(error => {
-          console.error('加载标准规范数据失败:', error);
-          const standardsListContainer = document.getElementById('standards-list');
-          if (standardsListContainer) {
-            standardsListContainer.innerHTML = '<p class="text-red-500">标准规范内容加载失败，请稍后重试。</p>';
-          }
-        });
+        .catch(error => console.error('加载标准规范数据失败:', error));
+        
+      // ===================================================
+      // ==            4. 其他页面原生逻辑             ==
+      // ===================================================
       // --- 移动端菜单逻辑 ---
       const menuButton = document.getElementById('mobile-menu-button');
       const mobileMenu = document.getElementById('mobile-menu');
@@ -491,17 +584,12 @@
       function toggleMenu(show) {
         const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
         const showMenu = typeof show === 'boolean' ? show : !isExpanded;
-
         menuButton.setAttribute('aria-expanded', showMenu);
-
         mobileMenu.classList.toggle('opacity-0', !showMenu);
         mobileMenu.classList.toggle('-translate-y-4', !showMenu);
         mobileMenu.classList.toggle('pointer-events-none', !showMenu);
-
         openIcon.classList.toggle('hidden', showMenu);
         closeIcon.classList.toggle('hidden', !showMenu);
-
-        // 防止背景滚动
         body.style.overflow = showMenu ? 'hidden' : '';
       }
 
@@ -509,13 +597,9 @@
         e.stopPropagation();
         toggleMenu();
       });
-
-      // 点击菜单链接后自动关闭菜单
       navLinks.forEach(link => {
         link.addEventListener('click', () => toggleMenu(false));
       });
-
-      // 点击外部区域关闭菜单
       document.addEventListener('click', (e) => {
         if (!mobileMenu.contains(e.target) && !menuButton.contains(e.target)) {
           toggleMenu(false);
@@ -532,9 +616,8 @@
           progressBar.style.width = `${Math.min(progress, 100)}%`;
         }
       };
-
       window.addEventListener('scroll', updateProgressBar, { passive: true });
-      updateProgressBar(); // Initial call
+      updateProgressBar();
 
       // --- 平滑滚动导航 ---
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -546,7 +629,6 @@
               behavior: 'smooth',
               block: 'start'
             });
-            // 移动端关闭菜单
             toggleMenu(false);
           }
         });
@@ -566,7 +648,7 @@
           });
         };
         updateTime();
-        setInterval(updateTime, 60000); // 每分钟更新一次
+        setInterval(updateTime, 60000);
       }
 
       // --- Chart.js 价格图表 ---
@@ -575,52 +657,22 @@
       let currentSymbol = 'lme-nickel';
       let currentPeriod = 7;
 
-      // 价格数据配置
       const priceConfig = {
-        'lme-nickel': {
-          label: 'LME镍价 ($)',
-          title: 'LME镍价走势分析',
-          basePrice: 15000,
-          variance: 500,
-          color: '#165DFF'
-        },
-        'shanghai-nickel': {
-          label: '沪镍主力 (¥)',
-          title: '沪镍主力走势分析',
-          basePrice: 118000,
-          variance: 2000,
-          color: '#36CFC9'
-        },
-        'stainless-steel': {
-          label: '不锈钢期货 (¥)',
-          title: '不锈钢期货走势分析',
-          basePrice: 12500,
-          variance: 300,
-          color: '#FF7D00'
-        },
-        'ferro-molybdenum': {
-          label: '钼铁Mo60 (¥)',
-          title: '钼铁Mo60走势分析',
-          basePrice: 258000,
-          variance: 8000,
-          color: '#52C41A'
-        }
+        'lme-nickel': { label: 'LME镍价 ($)', title: 'LME镍价走势分析', basePrice: 15000, variance: 500, color: '#165DFF' },
+        'shanghai-nickel': { label: '沪镍主力 (¥)', title: '沪镍主力走势分析', basePrice: 118000, variance: 2000, color: '#36CFC9' },
+        'stainless-steel': { label: '不锈钢期货 (¥)', title: '不锈钢期货走势分析', basePrice: 12500, variance: 300, color: '#FF7D00' },
+        'ferro-molybdenum': { label: '钼铁Mo60 (¥)', title: '钼铁Mo60走势分析', basePrice: 258000, variance: 8000, color: '#52C41A' }
       };
 
-      // 生成日期标签
       const generateLabels = (days) => {
         return Array.from({ length: days }, (_, i) => {
           const d = new Date();
           d.setDate(d.getDate() - (days - 1 - i));
-          if (days <= 30) {
-            return `${d.getMonth() + 1}/${d.getDate()}`;
-          } else {
-            return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
-          }
+          if (days <= 30) return `${d.getMonth() + 1}/${d.getDate()}`;
+          return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
         });
       };
 
-      // 生成模拟价格数据
       const generatePriceData = (basePrice, variance, days) => {
         let price = basePrice;
         return Array.from({length: days}, () => {
@@ -629,107 +681,50 @@
         });
       };
 
-      // 更新图表
       const updateChart = (symbol, period) => {
         const config = priceConfig[symbol];
         if (!config) return;
-
         const labels = generateLabels(period);
         const data = generatePriceData(config.basePrice, config.variance, period);
-
-        // 更新标题
         document.getElementById('chart-title').textContent = config.title;
-
-        if (currentChart) {
-          currentChart.destroy();
-        }
-
+        if (currentChart) currentChart.destroy();
         currentChart = new Chart(ctx, {
           type: 'line',
           data: {
             labels: labels,
             datasets: [{
-              label: config.label,
-              data: data,
-              borderColor: config.color,
-              backgroundColor: config.color + '20',
-              fill: true,
-              tension: 0.4,
-              pointBackgroundColor: config.color,
-              pointRadius: period > 90 ? 1 : 2,
-              pointHoverRadius: 6,
-              borderWidth: 2,
+              label: config.label, data: data, borderColor: config.color, backgroundColor: config.color + '20',
+              fill: true, tension: 0.4, pointBackgroundColor: config.color, pointRadius: period > 90 ? 1 : 2,
+              pointHoverRadius: 6, borderWidth: 2,
             }]
           },
           options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { 
-                display: false
-              },
-              tooltip: { 
-                mode: 'index', 
-                intersect: false,
-                backgroundColor: 'rgba(0,0,0,0.8)',
-                titleColor: 'white',
-                bodyColor: 'white',
-                borderColor: config.color,
-                borderWidth: 1
-              }
-            },
-            scales: { 
-              y: { 
-                beginAtZero: false,
-                grid: { color: 'rgba(0,0,0,0.1)' },
-                ticks: { font: { size: 11 } }
-              },
-              x: {
-                grid: { color: 'rgba(0,0,0,0.1)' },
-                ticks: { 
-                  font: { size: 11 },
-                  maxTicksLimit: period > 90 ? 12 : 15
-                }
-              }
-            },
-            interaction: { 
-              mode: 'nearest', 
-              axis: 'x', 
-              intersect: false 
-            }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, backgroundColor: 'rgba(0,0,0,0.8)', titleColor: 'white', bodyColor: 'white', borderColor: config.color, borderWidth: 1 } },
+            scales: { y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { font: { size: 11 } } }, x: { grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { font: { size: 11 }, maxTicksLimit: period > 90 ? 12 : 15 } } },
+            interaction: { mode: 'nearest', axis: 'x', intersect: false }
           }
         });
       };
 
       if (ctx) {
-        // 初始化图表
         updateChart(currentSymbol, currentPeriod);
-
-        // 价格卡片点击事件
         document.querySelectorAll('.price-card').forEach(card => {
           card.addEventListener('click', function() {
-            // 移除其他卡片的激活状态
             document.querySelectorAll('.price-card').forEach(c => c.classList.remove('active'));
-            // 添加当前卡片的激活状态
             this.classList.add('active');
-
             currentSymbol = this.dataset.symbol;
             updateChart(currentSymbol, currentPeriod);
           });
         });
-
-        // 时间周期按钮点击事件
         document.querySelectorAll('.period-btn').forEach(btn => {
           btn.addEventListener('click', function() {
-            // 移除其他按钮的激活状态
             document.querySelectorAll('.period-btn').forEach(b => {
               b.classList.remove('active', 'bg-blue-600', 'text-white');
               b.classList.add('bg-gray-200', 'text-gray-700');
             });
-            // 添加当前按钮的激活状态
             this.classList.add('active', 'bg-blue-600', 'text-white');
             this.classList.remove('bg-gray-200', 'text-gray-700');
-
             currentPeriod = parseInt(this.dataset.period);
             updateChart(currentSymbol, currentPeriod);
           });
