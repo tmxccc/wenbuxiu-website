@@ -516,7 +516,126 @@
       }
       
       checkLoginStatus(); // 页面加载时立即检查登录状态
+// ===================================================
+      // ==        新增：表单提交与API交互逻辑         ==
+      // ===================================================
+      const authForm = document.getElementById('auth-form');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const submitBtn = document.getElementById('submit-btn');
+      const switchLink = document.getElementById('switch-link');
+      const switchText = document.getElementById('switch-text');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSubtitle = document.getElementById('modal-subtitle');
+      const errorMessageDiv = document.getElementById('error-message');
 
+      let isLoginMode = true; // true为登录模式, false为注册模式
+
+      // 切换登录/注册模式的函数
+      function toggleMode(e) {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        authForm.reset(); // 重置表单
+        errorMessageDiv.classList.add('hidden'); // 切换时清空错误信息
+        if (isLoginMode) {
+          modalTitle.textContent = '登录您的账户';
+          modalSubtitle.textContent = '欢迎回来！';
+          submitBtn.textContent = '立即登录';
+          switchText.textContent = '还没有账户？';
+          switchLink.textContent = '立即注册';
+        } else {
+          modalTitle.textContent = '创建新账户';
+          modalSubtitle.textContent = '加入我们，探索更多可能';
+          submitBtn.textContent = '立即注册';
+          switchText.textContent = '已有账户？';
+          switchLink.textContent = '返回登录';
+        }
+      }
+
+      if (switchLink) switchLink.addEventListener('click', toggleMode);
+
+      // 表单提交事件
+      if (authForm) {
+        authForm.addEventListener('submit', async (e) => {
+          e.preventDefault(); // 阻止表单默认的刷新页面行为
+          errorMessageDiv.classList.add('hidden'); // 先隐藏旧的错误信息
+
+          const username = usernameInput.value;
+          const password = passwordInput.value;
+          
+          const url = isLoginMode ? 'http://localhost:3000/login' : 'http://localhost:3000/register';
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+          };
+
+          try {
+            const response = await fetch(url, options);
+            const data = await response.json(); // 解析后端返回的JSON数据
+
+            if (!response.ok) {
+              // 如果HTTP状态码不是2xx，说明有业务逻辑错误
+              throw new Error(data.message || '操作失败');
+            }
+
+            // --- 操作成功 ---
+            if (isLoginMode) {
+              // 登录成功
+              localStorage.setItem('token', data.token); // 将通行证保存到浏览器
+              localStorage.setItem('username', username);
+              alert('登录成功！');
+              updateUIAfterLogin(username);
+              closeModal();
+            } else {
+              // 注册成功
+              alert('注册成功！将自动切换到登录模式。');
+              toggleMode(e); // 切换回登录模式
+              usernameInput.value = username; // 自动填入刚注册的用户名
+              passwordInput.value = '';
+            }
+
+          } catch (error) {
+            // --- 操作失败 ---
+            errorMessageDiv.textContent = error.message;
+            errorMessageDiv.classList.remove('hidden');
+          }
+        });
+      }
+      
+      // 更新UI的函数
+      function updateUIAfterLogin(username) {
+          loginRegisterBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i> 退出登录`;
+          loginRegisterBtn.removeEventListener('click', openModal);
+          loginRegisterBtn.addEventListener('click', handleLogout);
+
+          mobileLoginRegisterBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i> 退出登录`;
+          mobileLoginRegisterBtn.removeEventListener('click', openModal);
+          mobileLoginRegisterBtn.addEventListener('click', handleLogout);
+      }
+
+      // 退出登录的函数
+      function handleLogout() {
+        if (confirm('您确定要退出登录吗？')) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          // 刷新页面以恢复初始状态
+          window.location.reload();
+        }
+      }
+
+      // 页面加载时检查登录状态的函数
+      function checkLoginStatus() {
+        const storedToken = localStorage.getItem('token');
+        const storedUsername = localStorage.getItem('username');
+        if (storedToken && storedUsername) {
+          updateUIAfterLogin(storedUsername);
+        }
+      }
+      
+      checkLoginStatus(); // 页面加载时立即检查
       // ===================================================
       // ==        3. 动态内容加载 (JSON文件)          ==
       // ===================================================
